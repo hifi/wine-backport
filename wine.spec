@@ -3,6 +3,8 @@
 
 # really really really ugly hack for EPEL 7 mock until i686 chroot is supported
 %define _target i686
+%define _target_arch i686
+%define _libdir %{_prefix}/lib
 
 %global _binfmtdir /usr/lib/binfmt.d
 %global binfmt_apply() \
@@ -57,6 +59,8 @@ Source502:      wine-README-tahoma
 
 Patch511:       wine-cjk.patch
 
+# wine / wine-core is in epel
+Conflicts:      wine-core
 ExclusiveArch:  i686
 
 BuildRequires:  glibc-devel(x86-32)
@@ -121,15 +125,15 @@ BuildRequires:  gstreamer1-devel(x86-32)
 BuildRequires:  gstreamer1-plugins-base-devel(x86-32)
 BuildRequires:  icoutils
 
-Requires:       wine-common = %{version}-%{release}
-Requires:       wine-desktop = %{version}-%{release}
-Requires:       wine-fonts = %{version}-%{release}
-Requires:       wine-core = %{version}-%{release}
-Requires:       wine-capi = %{version}-%{release}
-Requires:       wine-cms = %{version}-%{release}
-Requires:       wine-ldap = %{version}-%{release}
-Requires:       wine-twain = %{version}-%{release}
-Requires:       wine-pulseaudio = %{version}-%{release}
+Requires:       wine20-common = %{version}-%{release}
+Requires:       wine20-desktop = %{version}-%{release}
+Requires:       wine20-fonts = %{version}-%{release}
+Requires:       wine20-core = %{version}-%{release}
+Requires:       wine20-capi = %{version}-%{release}
+Requires:       wine20-cms = %{version}-%{release}
+Requires:       wine20-ldap = %{version}-%{release}
+Requires:       wine20-twain = %{version}-%{release}
+Requires:       wine20-pulseaudio = %{version}-%{release}
 
 #  wait for rhbz#968860 to require arch-specific samba-winbind-clients
 Requires:       /usr/bin/ntlm_auth
@@ -143,7 +147,7 @@ package includes a program loader, which allows unmodified Windows
 
 In Fedora wine is a meta-package which will install everything needed for wine
 to work smoothly. Smaller setups can be achieved by installing some of the
-wine-* sub packages.
+wine20-* sub packages.
 
 %package core
 Summary:        Wine core package
@@ -154,7 +158,7 @@ Requires(posttrans):   %{_sbindir}/alternatives
 Requires(preun):       %{_sbindir}/alternatives
 
 # require -filesystem
-Requires:       wine-filesystem = %{version}-%{release}
+Requires:       wine20-filesystem = %{version}-%{release}
 
 # CUPS support uses dlopen - rhbz#1367537
 Requires:       cups-libs(x86-32)
@@ -181,7 +185,6 @@ Requires:       systemd >= 23
 BuildArch:      noarch
 Requires(post):  systemd
 Requires(postun): systemd
-Obsoletes:      wine-sysvinit < %{version}-%{release}
 
 %description systemd
 Register the wine binary handler for windows executables via systemd binfmt
@@ -198,7 +201,7 @@ Filesystem directories and basic configuration for wine.
 %package common
 Summary:        Common files
 Group:          Applications/Emulators
-Requires:       wine-core = %{version}-%{release}
+Requires:       wine20-core = %{version}-%{release}
 BuildArch:      noarch
 
 %description common
@@ -211,9 +214,9 @@ Requires(post): /sbin/chkconfig, /sbin/service,
 Requires(post): desktop-file-utils >= 0.8
 Requires(preun): /sbin/chkconfig, /sbin/service
 Requires(postun): desktop-file-utils >= 0.8
-Requires:       wine-core = %{version}-%{release}
-Requires:       wine-common = %{version}-%{release}
-Requires:       wine-systemd = %{version}-%{release}
+Requires:       wine20-core = %{version}-%{release}
+Requires:       wine20-common = %{version}-%{release}
+Requires:       wine20-systemd = %{version}-%{release}
 Requires:       hicolor-icon-theme
 BuildArch:      noarch
 
@@ -225,15 +228,15 @@ handler service.
 Summary:       Wine font files
 Group:         Applications/Emulators
 BuildArch:     noarch
-Requires:      wine-courier-fonts = %{version}-%{release}
-Requires:      wine-fixedsys-fonts = %{version}-%{release}
-Requires:      wine-small-fonts = %{version}-%{release}
-Requires:      wine-system-fonts = %{version}-%{release}
-Requires:      wine-marlett-fonts = %{version}-%{release}
-Requires:      wine-ms-sans-serif-fonts = %{version}-%{release}
-Requires:      wine-tahoma-fonts = %{version}-%{release}
-Requires:      wine-symbol-fonts = %{version}-%{release}
-Requires:      wine-wingdings-fonts = %{version}-%{release}
+Requires:      wine20-courier-fonts = %{version}-%{release}
+Requires:      wine20-fixedsys-fonts = %{version}-%{release}
+Requires:      wine20-small-fonts = %{version}-%{release}
+Requires:      wine20-system-fonts = %{version}-%{release}
+Requires:      wine20-marlett-fonts = %{version}-%{release}
+Requires:      wine20-ms-sans-serif-fonts = %{version}-%{release}
+Requires:      wine20-tahoma-fonts = %{version}-%{release}
+Requires:      wine20-symbol-fonts = %{version}-%{release}
+Requires:      wine20-wingdings-fonts = %{version}-%{release}
 # intermediate fix for #593140
 Requires:      liberation-sans-fonts liberation-serif-fonts liberation-mono-fonts
 Requires:      liberation-narrow-fonts
@@ -303,19 +306,19 @@ Requires:      fontpackages-filesystem
 Summary:       Wine Tahoma font family
 Group:         User Interface/X
 BuildArch:     noarch
-Requires:      wine-filesystem = %{version}-%{release}
+Requires:      wine20-filesystem = %{version}-%{release}
 
 %description tahoma-fonts
 %{summary}
 Please note: If you want system integration for wine tahoma fonts install the
-wine-tahoma-fonts-system package.
+wine20-tahoma-fonts-system package.
 
 %package tahoma-fonts-system
 Summary:       Wine Tahoma font family system integration
 Group:         User Interface/X
 BuildArch:     noarch
 Requires:      fontpackages-filesystem
-Requires:      wine-tahoma-fonts = %{version}-%{release}
+Requires:      wine20-tahoma-fonts = %{version}-%{release}
 
 %description tahoma-fonts-system
 %{summary}
@@ -338,14 +341,14 @@ Requires:      fontpackages-filesystem
 %description wingdings-fonts
 %{summary}
 Please note: If you want system integration for wine wingdings fonts install the
-wine-wingdings-fonts-system package.
+wine20-wingdings-fonts-system package.
 
 %package wingdings-fonts-system
 Summary:       Wine Wingdings font family system integration
 Group:         User Interface/X
 BuildArch:     noarch
 Requires:      fontpackages-filesystem
-Requires:      wine-wingdings-fonts = %{version}-%{release}
+Requires:      wine20-wingdings-fonts = %{version}-%{release}
 
 %description wingdings-fonts-system
 %{summary}
@@ -354,7 +357,7 @@ Requires:      wine-wingdings-fonts = %{version}-%{release}
 %package ldap
 Summary: LDAP support for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 
 %description ldap
 LDAP support for wine
@@ -362,7 +365,7 @@ LDAP support for wine
 %package cms
 Summary: Color Management for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 
 %description cms
 Color Management for wine
@@ -370,7 +373,7 @@ Color Management for wine
 %package twain
 Summary: Twain support for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 Requires: sane-backends-libs(x86-32)
 
 %description twain
@@ -379,7 +382,7 @@ Twain support for wine
 %package capi
 Summary: ISDN support for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 Requires: isdn4k-utils(x86-32)
 
 %description capi
@@ -388,7 +391,7 @@ ISDN support for wine
 %package devel
 Summary: Wine development environment
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 
 %description devel
 Header, include files and library definition files for developing applications
@@ -397,9 +400,9 @@ with the Wine Windows(TM) emulation libraries.
 %package pulseaudio
 Summary: Pulseaudio support for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 # midi output
-Requires: wine-alsa%{?_isa} = %{version}-%{release}
+Requires: wine20-alsa%{?_isa} = %{version}-%{release}
 
 %description pulseaudio
 This package adds a pulseaudio driver for wine.
@@ -407,7 +410,7 @@ This package adds a pulseaudio driver for wine.
 %package alsa
 Summary: Alsa support for wine
 Group: System Environment/Libraries
-Requires: wine-core = %{version}-%{release}
+Requires: wine20-core = %{version}-%{release}
 
 %description alsa
 This package adds an alsa driver for wine.
@@ -416,7 +419,7 @@ This package adds an alsa driver for wine.
 %setup -q -n wine-%{version}
 %patch511 -p1 -b.cjk
 
-%build
+%build -n wine-%{version}
 
 # disable fortify as it breaks wine
 # http://bugs.winehq.org/show_bug.cgi?id=24606
